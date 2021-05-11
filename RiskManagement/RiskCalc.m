@@ -52,7 +52,8 @@ function normal = normalizes(data)
             c = 1;
         end
         data(i) = data(i)/value;
-        c = c - (2)*10^(-9);
+        %c = c - (8)*10^(-7);
+        c = c*0.99999992;
         value = value * c;
     end
     normal = data;

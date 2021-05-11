@@ -1,7 +1,6 @@
 % Used https://github.com/Lenskiy/Yahoo-Quandl-Market-Data-Donwloader/blob/master/getMarketDataViaYahoo.m
 % and https://stackoverflow.com/questions/50813539/user-agent-cookie-workaround-to-web-scraping-in-matlab
 function data = yahooData(symbol, startdate, enddate, interval)
-
     if(nargin() == 1)
             startdate = posixtime(datetime('1-Jan-2018'));
             enddate = posixtime(datetime()); % now

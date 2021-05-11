@@ -6,6 +6,7 @@ function main(days, useLog, interval, symbol1, symbol2)
     else
         initDate = '05-May-2001';
     end
+    
     switch nargin
         
         case 4

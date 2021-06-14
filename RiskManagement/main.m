@@ -1,14 +1,14 @@
 function main(days, useLog, interval, symbol1, symbol2)
-
+    is60m = 0;
     if(contains(interval, "m") && ~contains(interval, "mo"))
+        is60m = 1;
         initDate = '05-May-2020';
         days = days * 24;
     else
-        initDate = '05-May-2001';
+        initDate = '05-May-1991';
     end
     
     switch nargin
-        
         case 4
             cData = yahooData(symbol1, initDate, datetime('today'), interval);
             
@@ -18,7 +18,7 @@ function main(days, useLog, interval, symbol1, symbol2)
                 days = max-1;
             end
             cData = cData(~any(ismissing(cData),2),:);
-            UseData(cData, cData.Close, round(days), useLog, symbol1, -1);
+            UseData(cData, is60m, cData.Close, round(days), useLog, symbol1, -1);
             
         case 5
             cData1 = yahooData(symbol1, initDate, datetime('today'), interval);
@@ -34,16 +34,16 @@ function main(days, useLog, interval, symbol1, symbol2)
             d1 = cData1.Close(end-max+1:end);
             d2 = cData2.Close(end-max+1:end);
             cData =  d1./ d2;
-            UseData(cData1, cData, round(days), useLog, symbol1, symbol2);
+            UseData(cData1, is60m, cData, round(days), useLog, symbol1, symbol2);
     end
     
     disp('Done.');
 end
 
-function UseData(data, closeData, n, useLog, symbol1, symbol2)
+function UseData(data, is60m, closeData, n, useLog, symbol1, symbol2)
 % data, how many data points and if to use log (1 is yes, 0 is no)
 
-    [risk, priceRisk] = RiskCalc(data.Close);
+    [risk, priceRisk] = RiskCalc(data.Close, is60m);
     dates = data.Date;
     
     inData = closeData;
@@ -63,15 +63,19 @@ function UseData(data, closeData, n, useLog, symbol1, symbol2)
 end
 
 function plotData(n, useLog, data1, data2, data3, symbol1, symbol2)
+    if (n > size(data1, 1)) % Line 17 does not work sometimes?
+        n = size(data1, 1);
+    end
+
     data1 = data1(end-n+1:end);
     data2 = data2(end-n+1:end);
     data3 = data3(end-n+1:end);
     if(useLog == 1)
         minValue = min(data3);
-        %ylim([0 abs(minValue)*1.25])
+        ylim([0 abs(minValue)*1.25])
     else
         maxValue = max(data3);
-        %ylim([0 maxValue*1.25])
+        ylim([0 maxValue*1.25])
     end
     nexttile
     Plots(useLog, symbol1, symbol2, data2, data3, data1);

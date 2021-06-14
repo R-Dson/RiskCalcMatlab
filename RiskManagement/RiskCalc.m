@@ -1,4 +1,4 @@
-function [pr, r50O20W] = RiskCalc(data)
+function [pr, r50O20W] = RiskCalc(data, is60m)
 %returns risk, the average over 50 days divided by 350 days (normalizd by
 %timeframe). returns priceRisk, the current price divided by the 20 week
 %average, normalized by timeframe. Data needs to be >= 350
@@ -11,7 +11,7 @@ function [pr, r50O20W] = RiskCalc(data)
         return
     end
     
-    P = 0.1250;
+    P = 0.3450;
     
     windowSize20Weeks = 140;
     windowSize50Day = 50;
@@ -23,25 +23,23 @@ function [pr, r50O20W] = RiskCalc(data)
     
     % 50 days over 20 week average
     r50O20W = ma50Day ./ ma20WeeksInDays;
-    r50O20W = normalizes(r50O20W);
     
     % 50 day over 50 week average
     r50d50w = ma50Day ./ ma350Day;
-    r50d50w = normalizes(r50d50w);
     
     % 20 day over 50 week average
     risk = ma20WeeksInDays./ma350Day;
-    risk = normalizes(risk);
     
     % combining these
-    pr = r50O20W .* P + risk .* P + (r50d50w .* (1-2*P));
-    pr = normalizes(pr);
+    pr = r50O20W .* (P) + risk .*(P) + (r50d50w .*(1-2*P) );
+    %pr = r50d50w;
     
+    pr = normalizes(pr, is60m);
     pr = normalize(pr, 'range');
     r50O20W = normalize(r50O20W, 'range');
 end
 
-function normal = normalizes(data)
+function normal = normalizes(data, is60m)
     value = 0;
     l = size(data, 1);
     c = 1;
@@ -51,10 +49,14 @@ function normal = normalizes(data)
             value = rv;
             c = 1;
         end
-        data(i) = data(i)/value;
-        %c = c - (8)*10^(-7);
-        c = c*0.99999992;
+        if (is60m == 1)
+            c = c*(1-1e-7);
+        else
+            c = c*(1-5*10^(-6.8));
+            %c = c - (5)*10^(-6.8);
+        end
         value = value * c;
+        data(i) = data(i)/value;
     end
     normal = data;
 end

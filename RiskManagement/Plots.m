@@ -4,8 +4,8 @@ function s = Plots(useLog, symbol1, symbol2, data1, data2, data3)
     data2 = data2(350:end);
     data3 = data3(350:end);
     
-    tiledlayout(2,1)
-    nexttile
+    
+    %nexttile
     
     plot(data1, data2,'Color', '[1 1 1 0.1]')
     hold on;

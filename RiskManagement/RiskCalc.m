@@ -1,4 +1,4 @@
-function [pr, r50O20W, r50d50w, risk] = RiskCalc(data, is60m)
+function [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk] = RiskCalc(data, is60m)
 %returns risk, the average over 50 days divided by 350 days (normalizd by
 %timeframe). returns priceRisk, the current price divided by the 20 week
 %average, normalized by timeframe. Data needs to be >= 350
@@ -8,6 +8,9 @@ function [pr, r50O20W, r50d50w, risk] = RiskCalc(data, is60m)
         r50O20W = -1;
         r50d50w = -1;
         risk = -1;
+        pO200W = -1;
+        pO50W = -1;
+        lnp20w = -1;
         B=arrayfun(@num2str,size(data, 1),'un',0);
         disp(append('Not enough data. Data size: ', B{1,1}, '. Needs to be atleast 350.' ));
         return
@@ -18,10 +21,12 @@ function [pr, r50O20W, r50d50w, risk] = RiskCalc(data, is60m)
     windowSize20Weeks = 140;
     windowSize50Day = 50;
     windowSize350Day = 350;
+    windowSize1400Day = 1400;
     
     ma50Day = movmean(data, windowSize50Day);
     ma20WeeksInDays = movmean(data, windowSize20Weeks);
     ma350Day = movmean(data, windowSize350Day);
+    ma1400Day = movmean(data, windowSize1400Day); % 200 weeks
     
     % 50 days over 20 week average
     r50O20W = ma50Day ./ ma20WeeksInDays;
@@ -32,8 +37,19 @@ function [pr, r50O20W, r50d50w, risk] = RiskCalc(data, is60m)
     % 20 day over 50 week average
     risk = ma20WeeksInDays./ma350Day;
     
+    % price over 50 week average
+    pO50W = data ./ ma350Day;
+    
+    % prive over 200 week average
+    pO200W = data ./ ma1400Day;
+    
+    %
+    pO20W = data ./ ma20WeeksInDays;
+    
+    lnp20w = log10(pO20W);
+    
     % combining these
-    pr = r50O20W .* (P) + risk .*(P) + (r50d50w .*(1-2*P) );
+    pr = r50O20W .* (P) + risk .*(P) + (r50d50w .*(1-2*P-0.1*P - 0.15*P)) + pO200W.*(P*0.1) + pO50W.*(P*0.15);
     %pr = r50d50w;
     
     pr = normalizes(pr, is60m);
@@ -58,6 +74,7 @@ function normal = normalizes(data, is60m)
         else
             c = c*(1-1.618*10^(-5*1.618));
             %c = c - (5)*10^(-6.8);
+            %c = (1-10^(-5))*c;
         end
         value = value * c;
         data(i) = data(i)/value;

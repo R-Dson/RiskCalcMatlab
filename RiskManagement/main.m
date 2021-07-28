@@ -43,23 +43,25 @@ end
 function UseData(data, is60m, closeData, n, useLog, showAll, symbol1, symbol2)
 % data, how many data points and if to use log (1 is yes, 0 is no)
 
-    [pr, r50O20W, r50d50w, risk] = RiskCalc(data.Close, is60m);
+    [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk] = RiskCalc(data.Close, is60m);
     dates = data.Date;
     
     inData = closeData;
     if(useLog == 1)
         inData = log10(closeData);
     end
-    if(showAll == 1)
-        tiledlayout(2,4)
-    else
-        tiledlayout(2,1)
-    end
+%     if(showAll == 1)
+%         tiledlayout(2,8)
+%     else
+%         tiledlayout(2,1)
+%     end
     
     if(pr ~= -1)
         plotData(n, useLog, pr, dates, inData, symbol1, symbol2);
         title('Combinations', 'Color', 'w')
     end
+   
+    figure
     if (showAll == 1)
         if(r50O20W ~= -1)
             plotData(n, useLog, r50O20W, dates, inData, symbol1, symbol2);
@@ -73,8 +75,35 @@ function UseData(data, is60m, closeData, n, useLog, showAll, symbol1, symbol2)
             plotData(n, useLog, risk, dates, inData, symbol1, symbol2);
             title('20 day MA / 50 week MA (350 days)', 'Color', 'w')
         end
-    end
+        if(pO50W ~= -1)
+            figure
+            plotData(n, useLog, pO50W, dates, inData, symbol1, symbol2);
+            title('price / 50 weeks', 'Color', 'w')
+        end
+        if (pO200W ~= -1)
+            plotData(n, useLog, pO200W, dates, inData, symbol1, symbol2);
+            title('price / 200 weeks', 'Color', 'w')
+        end
+        if (lnp20w ~= -1)
+            figure
+            lnp20w(lnp20w > 0) = 1;
+            lnp20w(lnp20w < 0) = -1;
+            plotData(n, useLog, lnp20w, dates, inData, symbol1, symbol2);
+            title('log10(price / 20 weeks)', 'Color', 'w')
+            %coltab = zeros(length(lnp20w), 3);
+
+        %     
+        %     
+        %     rowsToSetBlue = lnp20w == 1;
+        %     rowsToSetRed = lnp20w == -1;
+        %     
+        %     coltab(rowsToSetBlue, :) = ones(sum(rowsToSetBlue), 3).*[0,0,0];
+        %     coltab(rowsToSetRed, :) = ones(sum(rowsToSetRed), 3).*[0,0,0];
     
+%             plotData(n, useLog, coltab, dates, inData, symbol1, symbol2);
+%             title('log10(price / 20 weeks)', 'Color', 'w')
+        end
+    end
     
 %     if(priceRisk ~= -1)
 %         plotData(n, useLog, risk, dates, inData, symbol1, symbol2);

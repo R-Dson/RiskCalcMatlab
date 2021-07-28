@@ -4,7 +4,6 @@ function s = Plots(useLog, symbol1, symbol2, data1, data2, data3)
     data2 = data2(350:end);
     data3 = data3(350:end);
     
-    
     %nexttile
     
     plot(data1, data2,'Color', '[1 1 1 0.1]')
@@ -18,14 +17,15 @@ function s = Plots(useLog, symbol1, symbol2, data1, data2, data3)
     end
     
     color = '0.083, 0.083, 0.083';
-    set(0,'defaultfigurecolor', color)
-    set(gca,'Color', color)
+    set(0, 'defaultfigurecolor', color)
+    set(gca, 'Color', color)
     grid on;
     if(symbol2 ~= -1)
         ylabel(append(symbol1, '/', symbol2))
     else
         ylabel(symbol1)
     end
+    
     xlabel('Time')
     ax = gca;
     ax.XColor = 'w';

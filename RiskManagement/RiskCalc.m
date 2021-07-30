@@ -46,7 +46,7 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk] = RiskCalc(data, is
     %
     pO20W = data ./ ma20WeeksInDays;
     
-    lnp20w = log10(pO20W);
+    lnp20w = log10(pO50W);
     
     % combining these
     pr = r50O20W .* (P) + risk .*(P) + (r50d50w .*(1-2*P-0.1*P - 0.15*P)) + pO200W.*(P*0.1) + pO50W.*(P*0.15);

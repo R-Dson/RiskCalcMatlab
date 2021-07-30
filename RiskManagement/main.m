@@ -86,10 +86,10 @@ function UseData(data, is60m, closeData, n, useLog, showAll, symbol1, symbol2)
         end
         if (lnp20w ~= -1)
             figure
-            lnp20w(lnp20w > 0) = 1;
-            lnp20w(lnp20w < 0) = -1;
+            lnp20w(lnp20w > 0) = 0;
+            lnp20w(lnp20w < 0) = 1;
             plotData(n, useLog, lnp20w, dates, inData, symbol1, symbol2);
-            title('log10(price / 20 weeks)', 'Color', 'w')
+            title('log10(price / 50 weeks)', 'Color', 'w')
             %coltab = zeros(length(lnp20w), 3);
 
         %     

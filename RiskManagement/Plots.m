@@ -1,8 +1,8 @@
 function s = Plots(useLog, symbol1, symbol2, data1, data2, data3)
 %Plots the data in as scatter
-    data1 = data1(350:end);
-    data2 = data2(350:end);
-    data3 = data3(350:end);
+%     data1 = data1(350:end);
+%     data2 = data2(350:end);
+%     data3 = data3(350:end);
     
     %nexttile
     
@@ -47,6 +47,11 @@ function s = Plots(useLog, symbol1, symbol2, data1, data2, data3)
     nexttile
     
     plot(data1, data3);
+    a = area(data1, data3);
+    a(1).FaceColor = [162, 162, 162]./ 256;
+    a(1).EdgeColor = [169, 205, 255] ./ 256;
+    a.FaceAlpha = 0.25;
+    
     color = '0.083, 0.083, 0.083';
     set(0,'defaultfigurecolor', color)
     set(gca,'Color', color)

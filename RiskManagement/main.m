@@ -7,7 +7,10 @@ function main(days, useLog, showAll, interval, symbol1, symbol2)
     else
         initDate = '05-May-1991';
     end
-    
+    is1wk = 0;
+    if (contains(interval, '1wk'))
+        is1wk = 1;
+    end
     switch nargin
         case 5
             cData = yahooData(symbol1, initDate, datetime('today'), interval);
@@ -18,7 +21,7 @@ function main(days, useLog, showAll, interval, symbol1, symbol2)
                 days = max-1;
             end
             cData = cData(~any(ismissing(cData),2),:);
-            UseData(cData, is60m, cData.Close, round(days), useLog, showAll, symbol1, -1);
+            UseData(cData, is60m, cData.Close, round(days), useLog, showAll, symbol1, -1, is1wk);
             
         case 6
             cData1 = yahooData(symbol1, initDate, datetime('today'), interval);
@@ -34,16 +37,16 @@ function main(days, useLog, showAll, interval, symbol1, symbol2)
             d1 = cData1.Close(end-max+1:end);
             d2 = cData2.Close(end-max+1:end);
             cData =  d1./ d2;
-            UseData(cData1, is60m, cData, round(days), useLog, showAll, symbol1, symbol2);
+            UseData(cData1, is60m, cData, round(days), useLog, showAll, symbol1, symbol2, is1wk);
     end
     
     disp('Done.');
 end
 
-function UseData(data, is60m, closeData, n, useLog, showAll, symbol1, symbol2)
+function UseData(data, is60m, closeData, n, useLog, showAll, symbol1, symbol2, is1wk)
 % data, how many data points and if to use log (1 is yes, 0 is no)
 
-    [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk] = RiskCalc(data.Close, is60m);
+    [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk] = RiskCalc(data.Close, is60m, is1wk);
     dates = data.Date;
     
     inData = closeData;
@@ -86,8 +89,8 @@ function UseData(data, is60m, closeData, n, useLog, showAll, symbol1, symbol2)
         end
         if (lnp20w ~= -1)
             figure
-            lnp20w(lnp20w > 0) = 0;
-            lnp20w(lnp20w < 0) = 1;
+            lnp20w(lnp20w > 0) = 1;
+            lnp20w(lnp20w < 0) = 0;
             plotData(n, useLog, lnp20w, dates, inData, symbol1, symbol2);
             title('log10(price / 50 weeks)', 'Color', 'w')
             %coltab = zeros(length(lnp20w), 3);

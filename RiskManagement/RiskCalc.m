@@ -1,4 +1,4 @@
-function [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk] = RiskCalc(data, is60m)
+function [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk] = RiskCalc(data, is60m, is1wk)
 %returns risk, the average over 50 days divided by 350 days (normalizd by
 %timeframe). returns priceRisk, the current price divided by the 20 week
 %average, normalized by timeframe. Data needs to be >= 350
@@ -18,13 +18,20 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk] = RiskCalc(data, is
     
     P = 0.3450;
     
-    windowSize20Weeks = 140;
-    windowSize50Day = 50;
-    windowSize350Day = 350;
-    windowSize1400Day = 1400;
-    
+    if (is1wk == 0)
+        windowSize20Weeks = 140;
+        windowSize50Day = 50;
+        windowSize350Day = 350;
+        windowSize1400Day = 1400;
+    end
+    if (is1wk == 1)
+        windowSize20Weeks = 140/7;
+        windowSize50Day = 50/7;
+        windowSize350Day = 350/7;
+        windowSize1400Day = 1400/7;
+    end
     ma50Day = movmean(data, windowSize50Day);
-    ma20WeeksInDays = movmean(data, windowSize20Weeks);
+    ma20WeeksInDays = movmean(data, 20);
     ma350Day = movmean(data, windowSize350Day);
     ma1400Day = movmean(data, windowSize1400Day); % 200 weeks
     
@@ -46,7 +53,7 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk] = RiskCalc(data, is
     %
     pO20W = data ./ ma20WeeksInDays;
     
-    lnp20w = log10(pO50W);
+    lnp20w = log10(pO20W);
     
     % combining these
     pr = r50O20W .* (P) + risk .*(P) + (r50d50w .*(1-2*P-0.1*P - 0.15*P)) + pO200W.*(P*0.1) + pO50W.*(P*0.15);

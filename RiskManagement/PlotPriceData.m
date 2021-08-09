@@ -1,4 +1,4 @@
-function PlotPriceData(AllData, ShowMA, ShowPriceDiv, ShowLogOver20Week, useLog)
+function PlotPriceData(AllData, ShowRisk, ShowMA, ShowPriceDiv, ShowLogOver20Week, useLog)
 % data, how many data points and if to use log (1 is yes, 0 is no)
     n = round(AllData{3});
     closeData = AllData{2};
@@ -24,8 +24,10 @@ function PlotPriceData(AllData, ShowMA, ShowPriceDiv, ShowLogOver20Week, useLog)
         inData = log10(closeData);
     end
     
-    if(pr ~= -1)
-        plotData(n, useLog, pr, dates, inData, symbol1, symbol2, 'Combinations');
+    if (ShowRisk == 1)
+        if(pr ~= -1)
+            plotData(n, useLog, pr, dates, inData, symbol1, symbol2, 'Combinations');
+        end
     end
     
     if(ShowMA == 1)

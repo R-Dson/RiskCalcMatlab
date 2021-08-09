@@ -1,0 +1,178 @@
+% function main2(days, useLog, showAll, interval, symbol1, symbol2)
+%     is60m = 0;
+%     if(contains(interval, "m") && ~contains(interval, "mo"))
+%         is60m = 1;
+%         initDate = '05-May-2020';
+%         days = days * 24;
+%     else
+%         initDate = '05-May-1991';
+%     end
+%     
+%     is1wk = 0;
+%     if (contains(interval, '1wk'))
+%         is1wk = 1;
+%     end
+%     
+%     switch nargin
+%         case 5
+%             cData = yahooData(symbol1, initDate, datetime('today'), interval);
+%             
+%             disp(append('Request historical YTD price for ', symbol1));
+%             max = size(cData, 1);
+%             if (days > max-1)
+%                 days = max-1;
+%             end
+%             cData = cData(~any(ismissing(cData),2),:);
+%             UseData(cData, is60m, cData.Close, is1wk, round(days), useLog, showAll, symbol1, -1);
+%             
+%         case 6
+%             cData1 = yahooData(symbol1, initDate, datetime('today'), interval);
+%             disp(append('Request historical YTD price for ', symbol1));
+%             cData2 = yahooData(symbol2, initDate, datetime('today'), interval);
+%             disp(append('Request historical YTD price for ', symbol2));
+% 
+%             cData1 = cData1(~any(ismissing(cData1),2),:);
+%             max = min([size(cData1, 1) size(cData2, 1)]);
+%             
+%             if (days > max)
+%                 days = max;
+%             end
+%             
+%             d1 = cData1.Close(end-max+1:end);
+%             d2 = cData2.Close(end-max+1:end);
+%             cData =  d1./ d2;
+%             UseData(cData1, is60m, is1wk, cData, round(days), useLog, showAll, symbol1, symbol2);
+%     end
+%     
+%     disp('Done.');
+% end
+
+function [cData, cData2, days] = main(days, interval, symbol1, symbol2)
+    if(contains(interval, "m") && ~contains(interval, "mo"))
+        initDate = '05-May-2020';
+        days = days * 24;
+    else
+        initDate = '05-May-1991';
+    end
+    
+    switch nargin
+        case 5
+            cData = yahooData(symbol1, initDate, datetime('today'), interval);
+            
+            disp(append('Request historical YTD price for ', symbol1));
+            max = size(cData, 1);
+            if (days > max-1)
+                days = max-1;
+            end
+            cData = cData(~any(ismissing(cData),2),:);
+            
+        case 6
+            cData = yahooData(symbol1, initDate, datetime('today'), interval);
+            disp(append('Request historical YTD price for ', symbol1));
+            cData2 = yahooData(symbol2, initDate, datetime('today'), interval);
+            disp(append('Request historical YTD price for ', symbol2));
+
+            cData = cData(~any(ismissing(cData1),2),:);
+            max = min([size(cData1, 1) size(cData2, 1)]);
+            
+            if (days > max)
+                days = max;
+            end
+            
+            d1 = cData1.Close(end-max+1:end);
+            d2 = cData2.Close(end-max+1:end);
+            cData =  d1./ d2;
+    end
+    
+    disp('Done.');
+end
+
+function UseData(data, data2, ShowMA, ShowPriceDiv, closeData, n, useLog, interval, symbol1, symbol2)
+% data, how many data points and if to use log (1 is yes, 0 is no)
+    max = size(data, 1);
+    if (n > max-1)
+        n = max-1;
+    end
+    n = round(n);
+    
+    max = size(data, 1);
+    if (narg == 9)
+        max = min([size(data, 1) size(data2, 1)]);
+    end
+    
+    is60m = 0;
+    if(contains(interval, "m") && ~contains(interval, "mo"))
+        is60m = 1;
+    end
+    
+    is1wk = 0;
+    if (contains(interval, '1wk'))
+        is1wk = 1;
+    end
+
+    [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk] = RiskCalc(data.Close, is60m, is1wk);
+    dates = data.Date;
+    
+    inData = closeData;
+    if(useLog == 1)
+        inData = log10(closeData);
+    end
+    
+    if(pr ~= -1)
+        plotData(n, useLog, pr, dates, inData, symbol1, symbol2);
+        title('Combinations', 'Color', 'w')
+    end
+    
+    if(ShowMA == 1)
+        if(r50O20W ~= -1)
+            plotData(n, useLog, r50O20W, dates, inData, symbol1, symbol2, '50 days / 20 weeks');
+        end
+        
+        if(r50d50w ~= -1)
+            plotData(n, useLog, r50d50w, dates, inData, symbol1, symbol2, '50 day / 50 week average');
+        end
+        
+        if(risk ~= -1)
+            plotData(n, useLog, risk, dates, inData, symbol1, symbol2, '20 day MA / 50 week MA (350 days)');
+        end
+    end
+    
+    if(ShowPriceDiv == 1)
+        if(pO50W ~= -1)
+            figure
+            plotData(n, useLog, pO50W, dates, inData, symbol1, symbol2, 'price / 50 weeks', 'Color', 'w');
+        end
+        
+        if (pO200W ~= -1)
+            plotData(n, useLog, pO200W, dates, inData, symbol1, symbol2, 'price / 200 weeks');
+        end
+        
+        if (lnp20w ~= -1)
+            figure
+            lnp20w(lnp20w > 0) = 1;
+            lnp20w(lnp20w < 0) = 0;
+            plotData(n, useLog, lnp20w, dates, inData, symbol1, symbol2, 'log10(price / 50 weeks)');
+        end
+    end
+end
+
+function plotData(n, useLog, data1, data2, data3, symbol1, symbol2, title)
+    if (n > size(data1, 1))
+        n = size(data1, 1);
+    end
+    nexttile
+    data1 = data1(end-n+1:end);
+    data2 = data2(end-n+1:end);
+    data3 = data3(end-n+1:end);
+    if(useLog == 1)
+        minValue = min(data3);
+        ylim([0 abs(minValue)*1.25])
+    else
+        maxValue = max(data3);
+        ylim([0 maxValue*1.25])
+    end
+    
+    Plots(useLog, symbol1, symbol2, data2, data3, data1);
+    hold on;
+    title(title, 'Color', 'w')
+end

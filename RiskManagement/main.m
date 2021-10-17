@@ -34,7 +34,9 @@ function [allData] = main(interval, symbol1, symbol2)
             
             d1 = cData.Close(end-max+1:end);
             d2 = cData2.Close(end-max+1:end);
-            cData =  d1./ d2;
+            %cData =  d1./ d2;
+            %close = cData;
+            close = d1./ d2;
     end
     allData = {cData, close, days, symbol1, symbol2, interval};
     disp('Done.');

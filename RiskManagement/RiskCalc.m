@@ -31,7 +31,7 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk] = RiskCalc(data, is
         windowSize1400Day = 1400/7;
     end
     ma50Day = movmean(data, windowSize50Day);
-    ma20WeeksInDays = movmean(data, 20);
+    ma20WeeksInDays = movmean(data, 20*7);
     ma350Day = movmean(data, windowSize350Day);
     ma1400Day = movmean(data, windowSize1400Day); % 200 weeks
     
@@ -79,9 +79,8 @@ function normal = normalizes(data, is60m)
         if (is60m == 1)
             c = c*(1-1e-7);
         else
-            c = c*(1-1.618*10^(-5*1.618));
-            %c = c - (5)*10^(-6.8);
-            %c = (1-10^(-5))*c;
+            %c = c*(1-1.5*10^(-8));
+            c = c - (5)*10^(-7.8);
         end
         value = value * c;
         data(i) = data(i)/value;

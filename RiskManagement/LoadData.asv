@@ -1,15 +1,9 @@
 clc
 clear
 
-% Changable values, minimum days i 350
-% Input data
-symbol1 = 'INTC'; %'ETH-USD'
+% changable, minimum days i 350
+symbol1 = 'TLRY'; %'ETH-USD'
 symbol2 = 'BTC-USD'; %'BTC-USD'
-
-% Get stock from csv file (such as from https://www.nasdaq.com/market-activity/stocks/screener)
-stocks = readtable('screener.csv').Symbol;
-
-% Or from a given list (CTRL + R to comment, CTRL + T to uncomment)
 stocks = {'WISH'
 'PINS'
 'F'
@@ -34,28 +28,29 @@ stocks = {'WISH'
 'PLTR'
 'BKR'};
 
-% Properties
 interval = '1d';
-useLog = 0;
+useLog = 1;
 ShowRisk = 1;
 ShowMA = 0;
 ShowPriceDiv = 0;
 ShowLogOver50Week = 0;
-
-% Supported intervals are '60m', '1d', '5d', '1wk', '1mo', '3mo'
-% Max value of days for 60m is 74 
+% supported intervals are '60m', '1d', '5d', '1wk', '1mo', '3mo'
+% max value of days for 60m is 74 
 
 %%
-% Gather data
+%gather data
 data = main(interval, symbol1);
-% Plot data
+%plot data
 PlotPriceData(data, ShowRisk, ShowMA, ShowPriceDiv, ShowLogOver50Week, useLog);
+
+%% Get stock from csv file (such as from https://www.nasdaq.com/market-activity/stocks/screener)
+T = readtable('screener.csv');
+stocks = T.Symbol;
 
 %% Find the stock with lowest risk in a given list
 data = cell(length(stocks), 6);
-maxCount = 20;
-min = 2.*ones(maxCount,1);
-ind = -1.*ones(maxCount,1);
+min = 2.*ones(10,1);
+ind = -1.*ones(10,1);
 
 for i = 1:length(stocks)
     s = stocks{i};
@@ -69,9 +64,9 @@ for i = 1:length(stocks)
     temp = PlotPriceData(d, 0, 0, 0, 0, 0);
     val = temp(end,1);
     indval = i;
-    for j = 1:maxCount
+    for j = 1:10
         if val > 0 && min(j) > val
-            for k = j:maxCount
+            for k = j:10
                 tempval = min(k);
                 min(k) = val;
                 val = tempval;
@@ -82,10 +77,12 @@ for i = 1:length(stocks)
             end
         end
     end
+%     if val > 0 && min > val
+%         min = val;
+%         ind = i;
+%     end
 end
-
-data(ind,4)
-min
-if ind > 0
-    PlotPriceData(data(ind(1),:), ShowRisk, ShowMA, ShowPriceDiv, ShowLogOver50Week, useLog);
-end
+da
+% if ind > 0
+%     PlotPriceData(data(ind,:), ShowRisk, ShowMA, ShowPriceDiv, ShowLogOver50Week, useLog);
+% end

@@ -1,5 +1,5 @@
 function [allData] = main(interval, symbol1, symbol2)
-    days = 5000;
+    days = 500000;
     if(contains(interval, "m") && ~contains(interval, "mo"))
         initDate = '05-May-2020';
         days = days * 24;

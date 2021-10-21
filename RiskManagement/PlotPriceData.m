@@ -1,4 +1,4 @@
-function PlotPriceData(AllData, ShowRisk, ShowMA, ShowPriceDiv, ShowLogOver20Week, useLog)
+function pr = PlotPriceData(AllData, ShowRisk, ShowMA, ShowPriceDiv, ShowLogOver20Week, useLog)
 % data, how many data points and if to use log (1 is yes, 0 is no)
     n = round(AllData{3});
     closeData = AllData{2};

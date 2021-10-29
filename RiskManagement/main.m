@@ -26,6 +26,7 @@ function [allData] = main(interval, symbol1, symbol2)
             disp(append('Request historical YTD price for ', symbol2));
 
             cData = cData(~any(ismissing(cData),2),:);
+            cData2 = cData2(~any(ismissing(cData2),2),:);
             max = min([size(cData, 1) size(cData2, 1)]);
             
             if (days > max)

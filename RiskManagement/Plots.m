@@ -1,4 +1,4 @@
-function s = Plots(useLog, symbol1, symbol2, data1, data2, data3)
+function s = Plots(useLog, Bollinger, symbol1, symbol2, data1, data2, data3)
 %Plots the data in as scatter
 %     data1 = data1(350:end);
 %     data2 = data2(350:end);
@@ -8,11 +8,13 @@ function s = Plots(useLog, symbol1, symbol2, data1, data2, data3)
     
     plot(data1, data2,'Color', '[1 1 1 0.1]')
     hold on;
-    
+    if Bollinger ~= -1
+        plot(data1, Bollinger);
+    end
     switch nargin
-        case 5
-            s = scatter(data1, data2, 28,'filled');
         case 6
+            s = scatter(data1, data2, 28,'filled');
+        case 7
             s = scatter(data1, data2, 28, data3, 'filled');
     end
     

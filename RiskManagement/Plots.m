@@ -14,9 +14,9 @@ function s = Plots(useLog, Bollinger, PlotSettings, RiskPlot, symbol1, symbol2, 
     end
     if thickness ~= 0
         switch nargin
-            case 7
-                s = scatter(data1, data2, thickness,'filled');
             case 8
+                s = scatter(data1, data2, thickness,'filled');
+            case 9
                 s = scatter(data1, data2, thickness, data3, 'filled');
         end
     end

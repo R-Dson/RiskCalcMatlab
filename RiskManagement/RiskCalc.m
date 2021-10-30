@@ -31,7 +31,7 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk] = RiskCalc(data, is
         windowSize1400Day = 1400/7;
     end
     ma50Day = movmean(data, windowSize50Day);
-    ma20WeeksInDays = movmean(data, 20*7);
+    ma20WeeksInDays = movmean(data, windowSize20Weeks);
     ma350Day = movmean(data, windowSize350Day);
     ma1400Day = movmean(data, windowSize1400Day); % 200 weeks
     

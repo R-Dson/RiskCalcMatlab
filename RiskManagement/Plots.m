@@ -1,23 +1,25 @@
-function s = Plots(useLog, Bollinger, symbol1, symbol2, data1, data2, data3)
+function s = Plots(useLog, Bollinger, PlotSettings, RiskPlot, symbol1, symbol2, data1, data2, data3)
 %Plots the data in as scatter
 %     data1 = data1(350:end);
 %     data2 = data2(350:end);
 %     data3 = data3(350:end);
     
     %nexttile
-    
-    plot(data1, data2,'Color', '[1 1 1 0.1]')
+    thickness = PlotSettings.Thickness;
+    intensity = [1 1 1 PlotSettings.LineIntensity];
+    plot(data1, data2,'Color', intensity)
     hold on;
     if Bollinger ~= -1
         plot(data1, Bollinger);
     end
-    switch nargin
-        case 6
-            s = scatter(data1, data2, 28,'filled');
-        case 7
-            s = scatter(data1, data2, 28, data3, 'filled');
+    if thickness ~= 0
+        switch nargin
+            case 7
+                s = scatter(data1, data2, thickness,'filled');
+            case 8
+                s = scatter(data1, data2, thickness, data3, 'filled');
+        end
     end
-    
     color = '0.083, 0.083, 0.083';
     set(0, 'defaultfigurecolor', color)
     set(gca, 'Color', color)
@@ -46,28 +48,30 @@ function s = Plots(useLog, Bollinger, symbol1, symbol2, data1, data2, data3)
     end
     
     %figure;
-    nexttile
+    if RiskPlot == 1
+        nexttile
     
-    plot(data1, data3);
-    a = area(data1, data3);
-    a(1).FaceColor = [162, 162, 162]./ 256;
-    a(1).EdgeColor = [169, 205, 255] ./ 256;
-    a.FaceAlpha = 0.25;
-    
-    color = '0.083, 0.083, 0.083';
-    set(0,'defaultfigurecolor', color)
-    set(gca,'Color', color)
-    grid on;
-    if(symbol2 ~= -1)
-        ylabel(append(symbol1, '/', symbol2))
-    else
-        ylabel("Risk")
+        plot(data1, data3);
+        a = area(data1, data3);
+        a(1).FaceColor = [162, 162, 162]./ 256;
+        a(1).EdgeColor = [169, 205, 255] ./ 256;
+        a.FaceAlpha = 0.25;
+
+        color = '0.083, 0.083, 0.083';
+        set(0,'defaultfigurecolor', color)
+        set(gca,'Color', color)
+        grid on;
+        if(symbol2 ~= -1)
+            ylabel(append(symbol1, '/', symbol2))
+        else
+            ylabel("Risk")
+        end
+
+        xlabel('Time')
+        ax = gca;
+        ax.XColor = 'w';
+        ax.YColor = 'w'; 
+        ax.GridAlpha = 0.05;
+        ax.YAxisLocation = 'right';
     end
-    
-    xlabel('Time')
-    ax = gca;
-    ax.XColor = 'w';
-    ax.YColor = 'w'; 
-    ax.GridAlpha = 0.05;
-    ax.YAxisLocation = 'right';
 end

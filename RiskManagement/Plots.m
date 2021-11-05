@@ -5,6 +5,7 @@ function s = Plots(useLog, Bollinger, PlotSettings, RiskPlot, symbol1, symbol2, 
 %     data3 = data3(350:end);
     
     %nexttile
+    
     thickness = PlotSettings.Thickness;
     intensity = [1 1 1 PlotSettings.LineIntensity];
     plot(data1, data2,'Color', intensity)
@@ -23,6 +24,7 @@ function s = Plots(useLog, Bollinger, PlotSettings, RiskPlot, symbol1, symbol2, 
     color = '0.083, 0.083, 0.083';
     set(0, 'defaultfigurecolor', color)
     set(gca, 'Color', color)
+    set(gcf, 'Color', color)
     grid on;
     if(symbol2 ~= -1)
         ylabel(append(symbol1, '/', symbol2))

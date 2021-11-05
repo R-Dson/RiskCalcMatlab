@@ -32,35 +32,35 @@ function pr = PlotPriceData(AllData, ShowRisk, ShowMA, ShowPriceDiv, ShowLogOver
     
     if(ShowMA == 1)
         if(r50O20W ~= -1)
-            plotData(n, useLog, r50O20W, dates, inData, symbol1, symbol2, '50 days / 20 weeks', ShowBollingerBand, PlotSettings);
+            plotData(n, useLog, r50O20W, dates, inData, symbol1, symbol2, '50 days / 20 weeks', ShowBollingerBand, PlotSettings, ShowRisk.RiskPlot);
         end
         
         if(r50d50w ~= -1)
-            plotData(n, useLog, r50d50w, dates, inData, symbol1, symbol2, '50 day / 50 week average', ShowBollingerBand, PlotSettings);
+            plotData(n, useLog, r50d50w, dates, inData, symbol1, symbol2, '50 day / 50 week average', ShowBollingerBand, PlotSettings, ShowRisk.RiskPlot);
         end
         
         if(risk ~= -1)
-            plotData(n, useLog, risk, dates, inData, symbol1, symbol2, '20 day MA / 50 week MA (350 days)', ShowBollingerBand, PlotSettings);
+            plotData(n, useLog, risk, dates, inData, symbol1, symbol2, '20 day MA / 50 week MA (350 days)', ShowBollingerBand, PlotSettings, ShowRisk.RiskPlot);
         end
     end
     
     if(ShowPriceDiv == 1)
-        figure
+        %figure
         if(pO50W ~= -1)
-            plotData(n, useLog, pO50W, dates, inData, symbol1, symbol2, 'price / 50 weeks', ShowBollingerBand, PlotSettings);
+            plotData(n, useLog, pO50W, dates, inData, symbol1, symbol2, 'price / 50 weeks', ShowBollingerBand, PlotSettings, ShowRisk.RiskPlot);
         end
         
         if (pO200W ~= -1)
-            plotData(n, useLog, pO200W, dates, inData, symbol1, symbol2, 'price / 200 weeks', ShowBollingerBand, PlotSettings);
+            plotData(n, useLog, pO200W, dates, inData, symbol1, symbol2, 'price / 200 weeks', ShowBollingerBand, PlotSettings, ShowRisk.RiskPlot);
         end
     end
     
     if (ShowLogOver20Week == 1)
         if (lnp20w ~= -1)
-            figure
+            %figure
             lnp20w(lnp20w > 0) = 1;
             lnp20w(lnp20w < 0) = 0;
-            plotData(n, useLog, lnp20w, dates, inData, symbol1, symbol2, 'log10(price / 50 weeks)', ShowBollingerBand, PlotSettings);
+            plotData(n, useLog, lnp20w, dates, inData, symbol1, symbol2, 'log10(price / 50 weeks)', ShowBollingerBand, PlotSettings, ShowRisk.RiskPlot);
         end
     end
 end

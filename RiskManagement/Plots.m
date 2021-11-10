@@ -1,4 +1,4 @@
-function s = Plots(useLog, Bollinger, PlotSettings, RiskPlot, symbol1, symbol2, data1, data2, data3)
+function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, symbol1, symbol2, data1, data2, data3)
 %Plots the data in as scatter
 %     data1 = data1(350:end);
 %     data2 = data2(350:end);
@@ -10,17 +10,23 @@ function s = Plots(useLog, Bollinger, PlotSettings, RiskPlot, symbol1, symbol2, 
     intensity = [1 1 1 PlotSettings.LineIntensity];
     plot(data1, data2,'Color', intensity)
     hold on;
+    
     if Bollinger ~= -1
         plot(data1, Bollinger);
     end
+    if movingAverage.ma20WeeksInDays ~= -1
+        plot(data1, movingAverage.ma20WeeksInDays);
+    end
+    
     if thickness ~= 0
         switch nargin
-            case 8
-                s = scatter(data1, data2, thickness,'filled');
             case 9
+                s = scatter(data1, data2, thickness,'filled');
+            case 10
                 s = scatter(data1, data2, thickness, data3, 'filled');
         end
     end
+    
     color = '0.083, 0.083, 0.083';
     set(0, 'defaultfigurecolor', color)
     set(gca, 'Color', color)

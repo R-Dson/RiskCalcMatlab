@@ -1,4 +1,4 @@
-function [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk] = RiskCalc(data, is60m, is1wk)
+function [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk, movingAverage] = RiskCalc(data, is60m, is1wk)
 %returns risk, the average over 50 days divided by 350 days (normalizd by
 %timeframe). returns priceRisk, the current price divided by the 20 week
 %average, normalized by timeframe. Data needs to be >= 350
@@ -11,6 +11,7 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk] = RiskCalc(data, is
         pO200W = -1;
         pO50W = -1;
         lnp20w = -1;
+        movingAverage.ma20WeeksInDays = -1;
         B=arrayfun(@num2str,size(data, 1),'un',0);
         disp(append('Not enough data. Data size: ', B{1,1}, '. Needs to be atleast 350.' ));
         return
@@ -64,6 +65,7 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk] = RiskCalc(data, is
     r50O20W = normalize(r50O20W, 'range');
     r50d50w = normalize(r50d50w, 'range');
     risk = normalize(risk, 'range');
+    movingAverage.ma20WeeksInDays = ma20WeeksInDays;
 end
 
 function normal = normalizes(data, is60m)

@@ -15,6 +15,9 @@ function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, sym
         plot(data1, Bollinger);
     end
     if movingAverage.ma20WeeksInDays ~= -1
+        minVal = min(length(data1), length(movingAverage.ma20WeeksInDays));
+        data1 = data1((length(data1) - minVal)+1:length(data1));
+        movingAverage.ma20WeeksInDays = movingAverage.ma20WeeksInDays((length(movingAverage.ma20WeeksInDays) - minVal)+1:length(movingAverage.ma20WeeksInDays));
         plot(data1, movingAverage.ma20WeeksInDays);
     end
     

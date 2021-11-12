@@ -88,7 +88,7 @@ function plotData(n, useLog, data1, data2, data3, symbol1, symbol2, PlotTitle, S
         ylim([0 maxValue*1.25])
     end
     if ShowBollingerBand == 1
-        [middle,upper,lower] = bollinger(data3,'WindowSize',15);
+        [middle,upper,lower] = bollinger(data3,'WindowSize',20);
         AllBollinger = [middle,upper,lower];
     else 
         AllBollinger = -1;

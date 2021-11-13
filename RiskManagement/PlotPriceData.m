@@ -16,17 +16,30 @@ function pr = PlotPriceData(AllData, ShowRisk, ShowMARatios, ShowMA, ShowPriceDi
         is1wk = 1;
     end
 
-    [pr, r50O20W, r50d50w, pO50W, pO200W, lnp20w, risk, movingAverage] = RiskCalc(closeData, is60m, is1wk);
+    [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverage] = RiskCalc(closeData, is60m, is1wk);
     dates = data.Date;
     
     inData = closeData;
     if(useLog == 1)
         inData = log10(closeData);
         movingAverage.ma20WeeksInDays = log10(movingAverage.ma20WeeksInDays);
+        movingAverage.ma50Day = log10(movingAverage.ma50Day);
+        movingAverage.ma350Day = log10(movingAverage.ma350Day);
+        movingAverage.ma1400Day = log10(movingAverage.ma1400Day);
+    end
+
+    if ShowMA.MA50day == 0
+        movingAverage.ma50Day = -1;
+    end
+    if ShowMA.MA20Week == 0
+        movingAverage.ma20WeeksInDays = -1;
     end
     
-    if ShowMA == 0
-        movingAverage.ma20WeeksInDays = -1;
+    if ShowMA.MA50week == 0
+        movingAverage.ma350Day = -1;
+    end
+    if ShowMA.MA200Week == 0
+        movingAverage.ma1400Day = -1;
     end
     
     if (ShowRisk.MainPlot == 1)
@@ -51,12 +64,16 @@ function pr = PlotPriceData(AllData, ShowRisk, ShowMARatios, ShowMA, ShowPriceDi
     
     if(ShowPriceDiv == 1)
         %figure
+        if (pO200W ~= -1)
+            plotData(n, useLog, pO200W, dates, inData, symbol1, symbol2, 'price / 200 weeks', ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot);
+        end
+        
         if(pO50W ~= -1)
             plotData(n, useLog, pO50W, dates, inData, symbol1, symbol2, 'price / 50 weeks', ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot);
         end
         
-        if (pO200W ~= -1)
-            plotData(n, useLog, pO200W, dates, inData, symbol1, symbol2, 'price / 200 weeks', ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot);
+        if (pO20W ~= -1)
+            plotData(n, useLog, pO20W, dates, inData, symbol1, symbol2, 'price / 20 weeks', ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot);
         end
     end
     

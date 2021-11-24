@@ -8,7 +8,7 @@ function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, sym
     
     thickness = PlotSettings.Thickness;
     intensity = [1 1 1 PlotSettings.LineIntensity];
-    plot(data1, data2,'Color', intensity)
+    plot(data1, real(data2),'Color', intensity)
     hold on;
     
     if Bollinger ~= -1

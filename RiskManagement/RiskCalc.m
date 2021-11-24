@@ -13,6 +13,9 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
         lnp20w = -1;
         pO20W = -1;
         movingAverage.ma20WeeksInDays = -1;
+        movingAverage.ma50Day = -1;
+        movingAverage.ma350Day = -1;
+        movingAverage.ma1400Day = -1;
         B=arrayfun(@num2str,size(data, 1),'un',0);
         disp(append('Not enough data. Data size: ', B{1,1}, '. Needs to be atleast 350.' ));
         return

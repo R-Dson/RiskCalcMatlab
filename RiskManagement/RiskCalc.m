@@ -2,24 +2,31 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
 %returns risk, the average over 50 days divided by 350 days (normalizd by
 %timeframe). returns priceRisk, the current price divided by the 20 week
 %average, normalized by timeframe. Data needs to be >= 350
-
-    if(size(data) < 350)
-        pr = -1;
-        r50O20W = -1;
-        r50d50w = -1;
-        risk = -1;
-        pO200W = -1;
-        pO50W = -1;
-        lnp20w = -1;
-        pO20W = -1;
-        movingAverage.ma20WeeksInDays = -1;
-        movingAverage.ma50Day = -1;
-        movingAverage.ma350Day = -1;
-        movingAverage.ma1400Day = -1;
-        B=arrayfun(@num2str,size(data, 1),'un',0);
-        disp(append('Not enough data. Data size: ', B{1,1}, '. Needs to be atleast 350.' ));
-        return
-    end
+    r50O20W = -1;
+    r50d50w = -1;
+    risk = -1;
+    pO200W = -1;
+    pO50W = -1;
+    lnp20w = -1;
+    pO20W = -1;
+    dataSize = size(data, 1);
+%     if(size(data) < 350)
+%         pr = -1;
+%         r50O20W = -1;
+%         r50d50w = -1;
+%         risk = -1;
+%         pO200W = -1;
+%         pO50W = -1;
+%         lnp20w = -1;
+%         pO20W = -1;
+%         movingAverage.ma20WeeksInDays = -1;
+%         movingAverage.ma50Day = -1;
+%         movingAverage.ma350Day = -1;
+%         movingAverage.ma1400Day = -1;
+%         B=arrayfun(@num2str,size(data, 1),'un',0);
+%         disp(append('Not enough data. Data size: ', B{1,1}, '. Needs to be atleast 350.' ));
+%         return
+%     end
     
     P = 0.3450;
     
@@ -35,30 +42,59 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
         windowSize350Day = 350/7;
         windowSize1400Day = 1400/7;
     end
-    ma50Day = movmean(data, windowSize50Day);
-    ma20WeeksInDays = movmean(data, windowSize20Weeks);
-    ma350Day = movmean(data, windowSize350Day);
-    ma1400Day = movmean(data, windowSize1400Day); % 200 weeks
+    if dataSize > windowSize50Day
+        ma50Day = movmean(data, windowSize50Day);
+    else
+        ma50Day = -1;
+    end
+    if dataSize > windowSize350Day
+        ma20WeeksInDays = movmean(data, windowSize20Weeks);
+    else
+        ma20WeeksInDays = -1;
+    end
+    if dataSize > windowSize350Day
+        ma350Day = movmean(data, windowSize350Day);
+    else
+        ma350Day = -1;
+    end
+    if dataSize > windowSize1400Day
+        ma1400Day = movmean(data, windowSize1400Day); % 200 weeks
+    else
+        ma1400Day = -1;
+    end    
     
     % 50 days over 20 week average
-    r50O20W = ma50Day ./ ma20WeeksInDays;
+    if dataSize > windowSize50Day && dataSize > windowSize350Day
+        r50O20W = ma50Day ./ ma20WeeksInDays;
+    end
     
+    if dataSize > windowSize50Day && dataSize > windowSize350Day
+        r50d50w = ma50Day ./ ma350Day;
+    end
     % 50 day over 50 week average
-    r50d50w = ma50Day ./ ma350Day;
     
+    if dataSize > windowSize350Day && dataSize > windowSize350Day
+        risk = ma20WeeksInDays ./ ma350Day;
+    end
     % 20 day over 50 week average
-    risk = ma20WeeksInDays ./ ma350Day;
     
+    
+    if dataSize > windowSize350Day
+        pO50W = data ./ ma350Day;
+    end
     % price over 50 week average
-    pO50W = data ./ ma350Day;
     
+    if dataSize > windowSize1400Day
+        pO200W = data ./ ma1400Day;
+    end
     % prive over 200 week average
-    pO200W = data ./ ma1400Day;
     
+    if dataSize > windowSize350Day
+        pO20W = data ./ ma20WeeksInDays;
+        lnp20w = log10(pO20W);
+    end
     %
-    pO20W = data ./ ma20WeeksInDays;
     
-    lnp20w = log10(pO20W);
     
     % combining these
     pr = r50O20W .* (P) + risk .*(P) + (r50d50w .*(1-2*P-0.1*P - 0.15*P)) + pO200W.*(P*0.1) + pO50W.*(P*0.15);

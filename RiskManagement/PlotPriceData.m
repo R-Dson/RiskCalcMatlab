@@ -15,13 +15,17 @@ function pr = PlotPriceData(AllData, ShowRisk, ShowMARatios, ShowMA, ShowPriceDi
     if (contains(interval, '1wk'))
         is1wk = 1;
     end
-
+    
+    closeData = closeData(~(closeData == 0));
+    data.Date = data.Date(~(closeData == 0));
+    
     [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverage] = RiskCalc(closeData, is60m, is1wk);
     dates = data.Date;
     
     inData = closeData;
     if(useLog == 1)
         inData = log10(closeData);
+        inData(inData == log10(0)) = 0;
         movingAverage.ma20WeeksInDays = log10(movingAverage.ma20WeeksInDays);
         movingAverage.ma50Day = log10(movingAverage.ma50Day);
         movingAverage.ma350Day = log10(movingAverage.ma350Day);
@@ -58,7 +62,7 @@ function pr = PlotPriceData(AllData, ShowRisk, ShowMARatios, ShowMA, ShowPriceDi
         end
         
         if(risk ~= -1)
-            plotData(n, useLog, risk, dates, inData, symbol1, symbol2, '20 day MA / 50 week MA (350 days)', ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot);
+            plotData(n, useLog, risk, dates, inData, symbol1, symbol2, '20 week MA / 50 week MA (350 days)', ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot);
         end
     end
     

@@ -97,8 +97,14 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
     
     
     % combining these
-    pr = r50O20W .* (P) + risk .*(P) + (r50d50w .*(1-2*P-0.1*P - 0.15*P)) + pO200W.*(P*0.1) + pO50W.*(P*0.15);
-    %pr = r50d50w;
+    pr = r50O20W .* (P) + risk .*(P) + (r50d50w .*(1 - 2*P - 0.1*P - 0.15*P)) + pO200W.*(P*0.1) + pO50W.*(P*0.15);
+    %pr =  r50d50w.* (2*P) + risk .*(P) +  r50O20W.*(1 -2*P -P);
+    %pr =  r50d50w %.* (2*P) + risk .*(1-2*P);
+
+    
+    % this is also pretty good
+    % P = 0.5;
+    %pr = risk .*( 1.5*P) + pO50W * (1-1.5*P);
     
     pr = normalizes(pr, is60m);
     pr = normalize(pr, 'range');
@@ -125,8 +131,8 @@ function normal = normalizes(data, is60m)
         if (is60m == 1)
             c = c*(1-1e-7);
         else
-            %c = c*(1-1.5*10^(-8));
-            c = c - (5)*10^(-7.8);
+            %c = c*(1-1.5*10^(-7));
+            c = c - (2)*10^(-7.8);
         end
         value = value * c;
         data(i) = data(i)/value;

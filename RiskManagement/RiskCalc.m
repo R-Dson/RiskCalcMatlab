@@ -103,8 +103,8 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
 
     
     % this is also pretty good
-    P = 3/4;
-    pr = risk .*( P) + pO50W * (1-P);
+%     P = 3/4;
+%     pr = risk .*( P) + pO50W * (1-P);
     
     pr = normalizes(pr, is60m);
     pr = normalize(pr, 'range');

@@ -15,7 +15,8 @@ function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, sym
         plot(data1, Bollinger);
     end
     if ind ~= -1
-        plot(data1(ind), data2(ind), 'o', 'MarkerSize', PlotSettings.Thickness/4+1, 'Color','w');
+        %plot(data1(ind), data2(ind), 'o', 'MarkerSize', PlotSettings.Thickness/4+1, 'Color','w');
+        line([data1(ind), data1(ind)], get(gca, 'ylim'),'LineStyle', '-', 'YLimInclude', 'off', 'color', 'y');
     end
     
     if movingAverage.ma20WeeksInDays ~= -1

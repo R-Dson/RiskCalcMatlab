@@ -1,4 +1,4 @@
-function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, symbol1, symbol2, data1, data2, data3)
+function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, symbol1, symbol2, data1, data2, data3, ind)
 %Plots the data in as scatter
 %     data1 = data1(350:end);
 %     data2 = data2(350:end);
@@ -14,6 +14,10 @@ function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, sym
     if Bollinger ~= -1
         plot(data1, Bollinger);
     end
+    if ind ~= -1
+        plot(data1(ind), data2(ind), 'o', 'MarkerSize', PlotSettings.Thickness/4+1, 'Color','w');
+    end
+    
     if movingAverage.ma20WeeksInDays ~= -1
         minVal = min(length(data1), length(movingAverage.ma20WeeksInDays));
         data1 = data1((length(data1) - minVal)+1:length(data1));
@@ -41,9 +45,9 @@ function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, sym
     
     if thickness ~= 0
         switch nargin
-            case 9
-                s = scatter(data1, data2, thickness,'filled');
             case 10
+                s = scatter(data1, data2, thickness,'filled');
+            case 11
                 s = scatter(data1, data2, thickness, data3, 'filled');
         end
     end

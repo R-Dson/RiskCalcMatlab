@@ -45,22 +45,22 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
     if dataSize > windowSize50Day
         ma50Day = movmean(data, windowSize50Day);
     else
-        ma50Day = -1;
+        ma50Day = 0;
     end
     if dataSize > windowSize350Day
         ma20WeeksInDays = movmean(data, windowSize20Weeks);
     else
-        ma20WeeksInDays = -1;
+        ma20WeeksInDays = 0;
     end
     if dataSize > windowSize350Day
         ma350Day = movmean(data, windowSize350Day);
     else
-        ma350Day = -1;
+        ma350Day = 0;
     end
     if dataSize > windowSize1400Day
         ma1400Day = movmean(data, windowSize1400Day); % 200 weeks
     else
-        ma1400Day = -1;
+        ma1400Day = 0;
     end    
     
     % 50 days over 20 week average
@@ -103,8 +103,8 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
 
     
     % this is also pretty good
-    % P = 0.5;
-    %pr = risk .*( 1.5*P) + pO50W * (1-1.5*P);
+    P = 3/4;
+    pr = risk .*( P) + pO50W * (1-P);
     
     pr = normalizes(pr, is60m);
     pr = normalize(pr, 'range');

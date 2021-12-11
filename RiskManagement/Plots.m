@@ -43,6 +43,17 @@ function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, sym
         movingAverage.ma1400Day = movingAverage.ma1400Day((length(movingAverage.ma1400Day) - minVal)+1:length(movingAverage.ma1400Day));
         plot(data1, movingAverage.ma1400Day);
     end
+    if movingAverage.ma20std ~= -1
+        minVal = min(length(data1), length(movingAverage.ma20std));
+        data1 = data1((length(data1) - minVal)+1:length(data1));
+        movingAverage.ma20std = movingAverage.ma20std((length(movingAverage.ma20std) - minVal)+1:length(movingAverage.ma20std));
+        plot(data1, movingAverage.ma20std);
+        
+        minVal = min(length(data1), length(movingAverage.ma20mstd));
+        data1 = data1((length(data1) - minVal)+1:length(data1));
+        movingAverage.ma20mstd = movingAverage.ma20mstd((length(movingAverage.ma20mstd) - minVal)+1:length(movingAverage.ma20mstd));
+        plot(data1, movingAverage.ma20mstd);
+    end
     
     if thickness ~= 0
         switch nargin

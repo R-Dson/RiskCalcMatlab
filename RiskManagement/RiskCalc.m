@@ -1,32 +1,18 @@
-function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverage] = RiskCalc(data, is60m, is1wk)
+function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverage] = RiskCalc(data, datalog, is60m, is1wk)
 %returns risk, the average over 50 days divided by 350 days (normalizd by
 %timeframe). returns priceRisk, the current price divided by the 20 week
 %average, normalized by timeframe. Data needs to be >= 350
-    r50O20W = -1;
-    r50d50w = -1;
-    risk = -1;
-    pO200W = -1;
-    pO50W = -1;
-    lnp20w = -1;
-    pO20W = -1;
+    r50O20W = 0;
+    r50d50w = 0;
+    risk = 0;
+    pO200W = 0;
+    pO50W = 0;
+    lnp20w = 0;
+    pO20W = 0;
     dataSize = size(data, 1);
-%     if(size(data) < 350)
-%         pr = -1;
-%         r50O20W = -1;
-%         r50d50w = -1;
-%         risk = -1;
-%         pO200W = -1;
-%         pO50W = -1;
-%         lnp20w = -1;
-%         pO20W = -1;
-%         movingAverage.ma20WeeksInDays = -1;
-%         movingAverage.ma50Day = -1;
-%         movingAverage.ma350Day = -1;
-%         movingAverage.ma1400Day = -1;
-%         B=arrayfun(@num2str,size(data, 1),'un',0);
-%         disp(append('Not enough data. Data size: ', B{1,1}, '. Needs to be atleast 350.' ));
-%         return
-%     end
+    windowSize20 = 20;
+    
+    %
     
     P = 0.3450;
     
@@ -61,7 +47,10 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
         ma1400Day = movmean(data, windowSize1400Day); % 200 weeks
     else
         ma1400Day = 0;
-    end    
+    end
+    if dataSize > windowSize20
+        movingAverage.ma20 = movmean(datalog, windowSize20);
+    end
     
     % 50 days over 20 week average
     if dataSize > windowSize50Day && dataSize > windowSize350Day
@@ -77,8 +66,7 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
         risk = ma20WeeksInDays ./ ma350Day;
     end
     % 20 day over 50 week average
-    
-    
+
     if dataSize > windowSize350Day
         pO50W = data ./ ma350Day;
     end
@@ -93,8 +81,15 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
         pO20W = data ./ ma20WeeksInDays;
         lnp20w = log10(pO20W);
     end
-    %
     
+    if dataSize > 20
+        movingAverage.std = movstd(datalog, 20); 
+        movingAverage.ma20std = movingAverage.ma20 + 1.5.*movingAverage.std;
+        movingAverage.ma20mstd = movingAverage.ma20 - 1.5.*movingAverage.std;
+    else
+        movingAverage.std = 0;
+    end
+    %
     
     % combining these
     pr = r50O20W .* (P) + risk .*(P) + (r50d50w .*(1 - 2*P - 0.1*P - 0.15*P)) + pO200W.*(P*0.1) + pO50W.*(P*0.15);
@@ -105,6 +100,28 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
     % this is also pretty good
 %     P = 3/4;
 %     pr = risk .*( P) + pO50W * (1-P);
+
+    if r50O20W == 0
+        r50O20W = -1;
+    end
+    if r50d50w == 0
+        r50d50w = -1;
+    end
+    if risk == 0
+        risk = -1;
+    end
+    if pO200W == 0
+        pO200W = -1;
+    end
+    if pO50W == 0
+        pO50W = -1;
+    end
+    if lnp20w == 0
+        lnp20w = -1;
+    end
+    if pO20W == 0
+        pO20W = -1;
+    end
     
     pr = normalizes(pr, is60m);
     pr = normalize(pr, 'range');

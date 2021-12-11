@@ -15,23 +15,31 @@ function pr = PlotPriceData(AllData, ShowRisk, ShowMARatios, ShowMA, ShowPriceDi
     if (contains(interval, '1wk'))
         is1wk = 1;
     end
-    rind = 2;
+    
     td = data.Date(~(closeData == 0));
     data.Date = td;
     closeData = closeData(~(closeData == 0));
+    if(useLog == 1)
+        closeData(closeData == log10(0)) = 0;
+        inData = log10(closeData);
+    else
+        inData = closeData;
+    end
     
-    [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverage] = RiskCalc(closeData, is60m, is1wk);
+    [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverage] = RiskCalc(closeData, inData, is60m, is1wk);
     dates = data.Date;
     
-    inData = closeData;
-    if(useLog == 1)
-        inData = log10(closeData);
-        inData(inData == log10(0)) = 0;
-        movingAverage.ma20WeeksInDays = log10(movingAverage.ma20WeeksInDays);
-        movingAverage.ma50Day = log10(movingAverage.ma50Day);
-        movingAverage.ma350Day = log10(movingAverage.ma350Day);
-        movingAverage.ma1400Day = log10(movingAverage.ma1400Day);
-    end
+    movingAverage.ma20mstd(movingAverage.ma20mstd < 0) = 0;
+%     if(useLog == 1)
+%         %inData = log10(closeData);
+%         
+% %         movingAverage.ma20WeeksInDays = log10(movingAverage.ma20WeeksInDays);
+% %         movingAverage.ma50Day = log10(movingAverage.ma50Day);
+% %         movingAverage.ma350Day = log10(movingAverage.ma350Day);
+% %         movingAverage.ma1400Day = log10(movingAverage.ma1400Day);
+%         movingAverage.ma20std = log10(movingAverage.ma20std);
+%         movingAverage.ma20mstd = log10(movingAverage.ma20mstd);
+%     end
     
     if (ShowRisk.ATH == 1)
         ind = [];
@@ -60,6 +68,9 @@ function pr = PlotPriceData(AllData, ShowRisk, ShowMARatios, ShowMA, ShowPriceDi
     end
     if ShowMA.MA200Week == 0
         movingAverage.ma1400Day = -1;
+    end
+    if ShowMA.ShowStdBand == 0
+        movingAverage.ma20std = -1;
     end
     
     if (ShowRisk.MainPlot == 1)

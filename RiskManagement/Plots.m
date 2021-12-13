@@ -7,7 +7,7 @@ function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, sym
     %nexttile
     
     thickness = PlotSettings.Thickness;
-    intensity = [1 1 1 PlotSettings.LineIntensity];
+    intensity = [PlotSettings.r PlotSettings.g PlotSettings.b PlotSettings.LineIntensity];
     plot(data1, real(data2),'Color', intensity)
     hold on;
     

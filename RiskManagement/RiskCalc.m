@@ -1,4 +1,4 @@
-function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverage] = RiskCalc(data, datalog, is60m, is1wk)
+function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverage, ROI] = RiskCalc(data, datalog, is60m, is1wk)
 %returns risk, the average over 50 days divided by 350 days (normalizd by
 %timeframe). returns priceRisk, the current price divided by the 20 week
 %average, normalized by timeframe. Data needs to be >= 350
@@ -9,9 +9,32 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
     pO50W = 0;
     lnp20w = 0;
     pO20W = 0;
+    ROI.Y1 = 0;
+    ROI.Y2 = 0;
+    ROI.Y3 = 0;
+    ROI.Y4 = 0;
+    ROI.Y5 = 0;
     dataSize = size(data, 1);
     windowSize20 = 20;
     
+    delta = 365;
+    if dataSize > delta
+        ROI.Y1 = log10(CalcROI(data, delta));
+    end
+    if dataSize > delta
+    end
+    if dataSize > 2*delta
+        ROI.Y2 = log10(CalcROI(data, delta*2));
+    end
+    if dataSize > 3*delta
+        ROI.Y3 = log10(CalcROI(data, delta*3));
+    end
+    if dataSize > 4*delta
+        ROI.Y4 = log10(CalcROI(data, delta*4));
+    end
+    if dataSize > 5*delta
+        ROI.Y5 = log10(CalcROI(data, delta*5));
+    end
     %
     
     P = 0.3450;
@@ -155,4 +178,8 @@ function normal = normalizes(data, is60m)
         data(i) = data(i)/value;
     end
     normal = data;
+end
+
+function ROI = CalcROI(data, delta)
+    ROI = data(delta+1:end) ./ data(1:end-delta) ;
 end

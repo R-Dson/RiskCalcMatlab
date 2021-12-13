@@ -122,36 +122,37 @@ function pr = PlotPriceData(AllData, ShowRisk, Show, ShowMA, useLog, PlotSetting
     end
     
     if Show.ROI == 1
+        ROIlegend = {'\color[rgb]{1,1,1}1 Year ROI', '\color[rgb]{1,0,1}2 Year ROI', '\color[rgb]{1,1,0}3 Year ROI', '\color[rgb]{1,0,0}4 Year ROI', '\color[rgb]{0,1,1}5 Year ROI'};
         if ROI.Y1 ~= 0
             PlotSettings.r = 1;
             PlotSettings.g = 1;
             PlotSettings.b = 1;
-            plotROI(n, ROI.Y1, dates, ROI.Y1, symbol2, ind, '', movingAverage, PlotSettings, ShowRisk.RiskPlot);
+            plotROI(n, ROI.Y1, dates, ROI.Y1, symbol2, ind, ROIlegend, movingAverage, PlotSettings, ShowRisk.RiskPlot);
         end
         if ROI.Y2 ~= 0
             PlotSettings.r = 1;
             PlotSettings.g = 0;
             PlotSettings.b = 1;
-            plotROI(n, ROI.Y2, dates, ROI.Y2, symbol2, ind, '2 Year ROI', movingAverage, PlotSettings, ShowRisk.RiskPlot);
+            plotROI(n, ROI.Y2, dates, ROI.Y2, symbol2, ind, ROIlegend, movingAverage, PlotSettings, ShowRisk.RiskPlot);
         end
         if ROI.Y3 ~= 0
             PlotSettings.r = 1;
             PlotSettings.g = 1;
             PlotSettings.b = 0;
-            plotROI(n, ROI.Y3, dates, ROI.Y3, symbol2, ind, '3 Year ROI', movingAverage, PlotSettings, ShowRisk.RiskPlot);
+            plotROI(n, ROI.Y3, dates, ROI.Y3, symbol2, ind, ROIlegend, movingAverage, PlotSettings, ShowRisk.RiskPlot);
         end
         if ROI.Y4 ~= 0
             PlotSettings.r = 1;
             PlotSettings.g = 0;
             PlotSettings.b = 0;
-            plotROI(n, ROI.Y4, dates, ROI.Y4, symbol2, ind, '4 Year ROI', movingAverage, PlotSettings, ShowRisk.RiskPlot);
+            plotROI(n, ROI.Y4, dates, ROI.Y4, symbol2, ind, ROIlegend, movingAverage, PlotSettings, ShowRisk.RiskPlot);
         end
         if ROI.Y5 ~= 0
             PlotSettings.r = 0;
             PlotSettings.g = 1;
             PlotSettings.b = 1;
             
-            plotROI(n, ROI.Y5, dates, ROI.Y5, symbol2, ind, {'\color[rgb]{1,1,1}1 Year ROI', '\color[rgb]{1,0,1}2 Year ROI', '\color[rgb]{1,1,0}3 Year ROI', '\color[rgb]{1,0,0}4 Year ROI', '\color[rgb]{0,1,1}5 Year ROI'}, movingAverage, PlotSettings, ShowRisk.RiskPlot);
+            plotROI(n, ROI.Y5, dates, ROI.Y5, symbol2, ind, ROIlegend, movingAverage, PlotSettings, ShowRisk.RiskPlot);
         end
     end
     

@@ -37,7 +37,7 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
     end
     %
     
-    P = 0.3450;
+    P = 1/3;
     
     if (is1wk == 0)
         windowSize20Weeks = 140;
@@ -111,6 +111,8 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
         movingAverage.ma20mstd = movingAverage.ma20 - 1.5.*movingAverage.std;
     else
         movingAverage.std = 0;
+        movingAverage.ma20mstd = 0;
+        movingAverage.ma20std = 0;
     end
     %
     

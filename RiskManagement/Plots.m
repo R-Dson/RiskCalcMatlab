@@ -1,4 +1,4 @@
-function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, symbol1, symbol2, data1, data2, data3, ind)
+function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, symbol1, symbol2, data1, data2, data3, ind, fitdata)
 %Plots the data in as scatter
 %     data1 = data1(350:end);
 %     data2 = data2(350:end);
@@ -10,7 +10,7 @@ function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, sym
     intensity = [PlotSettings.r PlotSettings.g PlotSettings.b PlotSettings.LineIntensity];
     plot(data1, real(data2),'Color', intensity)
     hold on;
-    
+%     plot(data1, fitdata.y(2:end));
     if Bollinger ~= -1
         plot(data1, Bollinger);
     end
@@ -57,9 +57,9 @@ function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, sym
     
     if thickness ~= 0
         switch nargin
-            case 10
-                s = scatter(data1, data2, thickness,'filled');
             case 11
+                s = scatter(data1, data2, thickness,'filled');
+            case 12
                 s = scatter(data1, data2, thickness, data3, 'filled');
         end
     end
@@ -84,6 +84,7 @@ function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, sym
     c.Color = 'w';
     ax.GridAlpha = 0.05; 
     
+    
     if(useLog == 1)
         yt = get(gca,'ytick');
         for j=2:2:length(yt)
@@ -91,6 +92,7 @@ function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, sym
         end
         yticklabels(YTL);
     end
+    
     
     %figure;
     if RiskPlot == 1
@@ -119,4 +121,5 @@ function s = Plots(useLog, Bollinger, movingAverage, PlotSettings, RiskPlot, sym
         ax.GridAlpha = 0.05;
         ax.YAxisLocation = 'right';
     end
+    
 end

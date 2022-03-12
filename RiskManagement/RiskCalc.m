@@ -1,4 +1,4 @@
-function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverage, ROI] = RiskCalc(data, datalog, is60m, is1wk)
+function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverage, ROI, fitdata] = RiskCalc(data, datalog, is60m, is1wk)
 %returns risk, the average over 50 days divided by 350 days (normalizd by
 %timeframe). returns priceRisk, the current price divided by the 20 week
 %average, normalized by timeframe. Data needs to be >= 350
@@ -15,6 +15,8 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
     ROI.Y4 = 0;
     ROI.Y5 = 0;
     dataSize = size(data, 1);
+    x = linspace(1,dataSize, dataSize)';
+    fitdata.f.a = NaN;
     windowSize20 = 20;
     
     delta = 365;
@@ -35,6 +37,17 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
     if dataSize > 5*delta
         ROI.Y5 = log10(CalcROI(data, delta*5));
     end
+    
+    %
+
+%     y = data;
+%     myfit = fittype('a + b*log(x)',...
+%     'dependent',{'y'},'independent',{'x'},...
+%     'coefficients',{'a','b'});
+%     fitdata.f = fit(x, log(y), myfit);
+%     fitdata.x = x;
+%     fitdata.y = fitdata.f.a + fitdata.f.b * log(x);
+    
     %
     
     P = 1/3;
@@ -52,22 +65,22 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
         windowSize1400Day = 1400/7;
     end
     if dataSize > windowSize50Day
-        ma50Day = movmean(data, windowSize50Day);
+        ma50Day = movmean(datalog, windowSize50Day);
     else
         ma50Day = 0;
     end
     if dataSize > windowSize350Day
-        ma20WeeksInDays = movmean(data, windowSize20Weeks);
+        ma20WeeksInDays = movmean(datalog, windowSize20Weeks);
     else
         ma20WeeksInDays = 0;
     end
     if dataSize > windowSize350Day
-        ma350Day = movmean(data, windowSize350Day);
+        ma350Day = movmean(datalog, windowSize350Day);
     else
         ma350Day = 0;
     end
     if dataSize > windowSize1400Day
-        ma1400Day = movmean(data, windowSize1400Day); % 200 weeks
+        ma1400Day = movmean(datalog, windowSize1400Day); % 200 weeks
     else
         ma1400Day = 0;
     end
@@ -98,7 +111,7 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
     if dataSize > windowSize1400Day
         pO200W = data ./ ma1400Day;
     end
-    % prive over 200 week average
+    % price over 200 week average
     
     if dataSize > windowSize350Day
         pO20W = data ./ ma20WeeksInDays;

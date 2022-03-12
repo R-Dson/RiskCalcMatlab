@@ -30,20 +30,10 @@ function pr = PlotPriceData(AllData, ShowRisk, Show, ShowMA, useLog, PlotSetting
         inData = closeData;
     end
     
-    [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverage, ROI] = RiskCalc(closeData, inData, is60m, is1wk);
+    [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverage, ROI, fitdata] = RiskCalc(closeData, inData, is60m, is1wk);
     dates = data.Date;
     
     movingAverage.ma20mstd(movingAverage.ma20mstd < 0) = 0;
-%     if(useLog == 1)
-%         %inData = log10(closeData);
-%         
-% %         movingAverage.ma20WeeksInDays = log10(movingAverage.ma20WeeksInDays);
-% %         movingAverage.ma50Day = log10(movingAverage.ma50Day);
-% %         movingAverage.ma350Day = log10(movingAverage.ma350Day);
-% %         movingAverage.ma1400Day = log10(movingAverage.ma1400Day);
-%         movingAverage.ma20std = log10(movingAverage.ma20std);
-%         movingAverage.ma20mstd = log10(movingAverage.ma20mstd);
-%     end
     
     if (ShowRisk.ATH == 1)
         ind = [];
@@ -79,36 +69,38 @@ function pr = PlotPriceData(AllData, ShowRisk, Show, ShowMA, useLog, PlotSetting
     
     if (ShowRisk.MainPlot == 1)
         if(pr ~= -1)
-            plotData(n, useLog, pr, dates, inData, symbol1, symbol2, ind, 'Combinations', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot);
+            
+            plotData(n, useLog, pr, dates, inData, symbol1, symbol2, ind, 'Combinations', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot, fitdata);
+            %plot(fitdata.f, fitdata.x, fitdata.y);
         end
     end
     
     if(Show.ShowMARatios == 1)
         if(r50O20W ~= -1)
-            plotData(n, useLog, r50O20W, dates, inData, symbol1, symbol2, ind, '50 days / 20 weeks', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot);
+            plotData(n, useLog, r50O20W, dates, inData, symbol1, symbol2, ind, '50 days / 20 weeks', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot, fitdata);
         end
         
         if(r50d50w ~= -1)
-            plotData(n, useLog, r50d50w, dates, inData, symbol1, symbol2, ind, '50 day / 50 week average', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot);
+            plotData(n, useLog, r50d50w, dates, inData, symbol1, symbol2, ind, '50 day / 50 week average', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot, fitdata);
         end
         
         if(risk ~= -1)
-            plotData(n, useLog, risk, dates, inData, symbol1, symbol2, ind, '20 week MA / 50 week MA (350 days)', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot);
+            plotData(n, useLog, risk, dates, inData, symbol1, symbol2, ind, '20 week MA / 50 week MA (350 days)', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot, fitdata);
         end
     end
     
     if(Show.ShowPriceDiv == 1)
         %figure
         if (pO200W ~= -1)
-            plotData(n, useLog, pO200W, dates, inData, symbol1, symbol2, ind, 'price / 200 weeks', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot);
+            plotData(n, useLog, pO200W, dates, pO200W, symbol1, symbol2, ind, 'price / 200 weeks', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot, fitdata);
         end
         
         if(pO50W ~= -1)
-            plotData(n, useLog, pO50W, dates, inData, symbol1, symbol2, ind, 'price / 50 weeks', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot);
+            plotData(n, useLog, pO50W, dates, pO50W, symbol1, symbol2, ind, 'price / 50 weeks', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot, fitdata);
         end
         
         if (pO20W ~= -1)
-            plotData(n, useLog, pO20W, dates, inData, symbol1, symbol2, ind, 'price / 20 weeks', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot);
+            plotData(n, useLog, pO20W, dates, pO20W, symbol1, symbol2, ind, 'price / 20 weeks', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot, fitdata);
         end
     end
     
@@ -117,7 +109,7 @@ function pr = PlotPriceData(AllData, ShowRisk, Show, ShowMA, useLog, PlotSetting
             %figure
             lnp20w(lnp20w > 0) = 1;
             lnp20w(lnp20w < 0) = 0;
-            plotData(n, useLog, lnp20w, dates, inData, symbol1, symbol2, ind, 'log10(price / 20 weeks)', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot);
+            plotData(n, useLog, lnp20w, dates, inData, symbol1, symbol2, ind, 'log10(price / 20 weeks)', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot, fitdata);
         end
     end
     
@@ -159,7 +151,7 @@ function pr = PlotPriceData(AllData, ShowRisk, Show, ShowMA, useLog, PlotSetting
     
 end
 
-function plotData(n, useLog, price, dates, closePrice, symbol1, symbol2, ind, PlotTitle, ShowBollingerBand, movingAverage, PlotSettings, RiskPlot)
+function plotData(n, useLog, price, dates, closePrice, symbol1, symbol2, ind, PlotTitle, ShowBollingerBand, movingAverage, PlotSettings, RiskPlot, fitdata)
     if (n > size(price, 1))
         n = size(price, 1);
     end
@@ -182,7 +174,7 @@ function plotData(n, useLog, price, dates, closePrice, symbol1, symbol2, ind, Pl
     else 
         AllBollinger = -1;
     end
-    Plots(useLog, AllBollinger, movingAverage, PlotSettings, RiskPlot, symbol1, symbol2, dates, closePrice, price, ind);
+    Plots(useLog, AllBollinger, movingAverage, PlotSettings, RiskPlot, symbol1, symbol2, dates, closePrice, price, ind, fitdata);
     hold on;
     title(PlotTitle, 'Color', 'w')
 end
@@ -194,7 +186,7 @@ function plotROI(n, price, dates, closePrice, symbol2, ind, PlotTitle, movingAve
     price = price(end-n+1:end);
     dates = dates(end-n+1:end);
     closePrice = closePrice(end-n+1:end);
-    Plots(1, -1, movingAverage, PlotSettings, RiskPlot, 'ROI', symbol2, dates, closePrice, price, ind);
+    Plots(1, -1, movingAverage, PlotSettings, RiskPlot, 'ROI', symbol2, dates, closePrice, price, ind, -1);
     hold on;
     legend(PlotTitle);
     title('1, 2, 3, 4 and 5 Year ROI', 'Color', 'w')

@@ -19,7 +19,7 @@ function data = yahooData(symbol, startdate, enddate, interval)
     end
     
     url = 'https://query1.finance.yahoo.com/v8/finance/chart/';
-    opts = weboptions('RequestMethod','get', 'MediaType','application/json', 'ContentType','json', 'UserAgent', 'Mozilla/5.0');
+    opts = weboptions('RequestMethod','get', 'MediaType','application/json', 'ContentType','json', 'UserAgent', 'Mozilla/5.0', 'CertificateFilename','');
     url = strcat(url, symbol, '?symbol=', symbol);
 
     %Construct url, add time intervals. The following url is for last month worth of data.

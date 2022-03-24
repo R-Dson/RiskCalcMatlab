@@ -92,15 +92,15 @@ function pr = PlotPriceData(AllData, ShowRisk, Show, ShowMA, useLog, PlotSetting
     if(Show.ShowPriceDiv == 1)
         %figure
         if (pO200W ~= -1)
-            plotData(n, useLog, pO200W, dates, closeData, symbol1, symbol2, ind, 'price / 200 weeks', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot, fitdata);
+            plotData(n, useLog, pO200W, dates, inData, symbol1, symbol2, ind, 'price / 200 weeks', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot, fitdata);
         end
         
         if(pO50W ~= -1)
-            plotData(n, useLog, pO50W, dates, closeData, symbol1, symbol2, ind, 'price / 50 weeks', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot, fitdata);
+            plotData(n, useLog, pO50W, dates, inData, symbol1, symbol2, ind, 'price / 50 weeks', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot, fitdata);
         end
         
         if (pO20W ~= -1)
-            plotData(n, useLog, pO20W, dates, closeData, symbol1, symbol2, ind, 'price / 20 weeks', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot, fitdata);
+            plotData(n, useLog, pO20W, dates, inData, symbol1, symbol2, ind, 'price / 20 weeks', Show.ShowBollingerBand, movingAverage, PlotSettings, ShowRisk.RiskPlot, fitdata);
         end
     end
     

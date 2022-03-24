@@ -169,7 +169,7 @@ function plotData(n, useLog, price, dates, closePrice, symbol1, symbol2, ind, Pl
         ylim([0 maxValue*1.25])
     end
     if ShowBollingerBand == 1
-        [middle,upper,lower] = bollinger(data3,'WindowSize',20);
+        [middle,upper,lower] = bollinger(closePrice,'WindowSize',20);
         AllBollinger = [middle,upper,lower];
     else 
         AllBollinger = -1;

@@ -66,23 +66,31 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
     end
     if dataSize > windowSize50Day
         ma50Day = movmean(datalog, windowSize50Day);
+        ma50DayNormal = movmean(data, windowSize50Day);
     else
         ma50Day = 0;
+        ma50DayNormal = 0;
     end
     if dataSize > windowSize350Day
         ma20WeeksInDays = movmean(datalog, windowSize20Weeks);
+        ma20WeeksInDaysNormal = movmean(data, windowSize20Weeks);
     else
         ma20WeeksInDays = 0;
+        ma20WeeksInDaysNormal = 0;
     end
     if dataSize > windowSize350Day
         ma350Day = movmean(datalog, windowSize350Day);
+        ma350DayNormal = movmean(data, windowSize350Day);
     else
         ma350Day = 0;
+        ma350DayNormal = 0;
     end
     if dataSize > windowSize1400Day
         ma1400Day = movmean(datalog, windowSize1400Day); % 200 weeks
+        ma1400DayNormal = movmean(data, windowSize1400Day);
     else
         ma1400Day = 0;
+        ma1400DayNormal = 0;
     end
     if dataSize > windowSize20
         movingAverage.ma20 = movmean(datalog, windowSize20);
@@ -90,31 +98,31 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
     
     % 50 days over 20 week average
     if dataSize > windowSize50Day && dataSize > windowSize350Day
-        r50O20W = ma50Day ./ ma20WeeksInDays;
+        r50O20W = ma50DayNormal ./ ma20WeeksInDaysNormal;
     end
     
     if dataSize > windowSize50Day && dataSize > windowSize350Day
-        r50d50w = ma50Day ./ ma350Day;
+        r50d50w = ma50DayNormal ./ ma350DayNormal;
     end
     % 50 day over 50 week average
     
     if dataSize > windowSize350Day && dataSize > windowSize350Day
-        risk = ma20WeeksInDays ./ ma350Day;
+        risk = ma20WeeksInDaysNormal ./ ma350DayNormal;
     end
     % 20 day over 50 week average
 
     if dataSize > windowSize350Day
-        pO50W = data ./ ma350Day;
+        pO50W = data ./ ma350DayNormal;
     end
     % price over 50 week average
     
     if dataSize > windowSize1400Day
-        pO200W = data ./ ma1400Day;
+        pO200W = data ./ ma1400DayNormal;
     end
     % price over 200 week average
     
     if dataSize > windowSize350Day
-        pO20W = data ./ ma20WeeksInDays;
+        pO20W = data ./ ma20WeeksInDaysNormal;
         lnp20w = log10(pO20W);
     end
     

@@ -65,32 +65,32 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
         windowSize1400Day = 1400/7;
     end
     if dataSize > windowSize50Day
-        ma50Day = movmean(datalog, windowSize50Day);
-        ma50DayNormal = movmean(data, windowSize50Day);
+        ma50Day = movmean(data, windowSize50Day);
+        ma50Daylog = movmean(datalog, windowSize50Day);
     else
         ma50Day = 0;
-        ma50DayNormal = 0;
+        ma50Daylog = 0;
     end
     if dataSize > windowSize350Day
-        ma20WeeksInDays = movmean(datalog, windowSize20Weeks);
-        ma20WeeksInDaysNormal = movmean(data, windowSize20Weeks);
+        ma20WeeksInDays = movmean(data, windowSize20Weeks);
+        ma20WeeksInDayslog = movmean(datalog, windowSize20Weeks);
     else
         ma20WeeksInDays = 0;
-        ma20WeeksInDaysNormal = 0;
+        ma20WeeksInDayslog = 0;
     end
     if dataSize > windowSize350Day
-        ma350Day = movmean(datalog, windowSize350Day);
-        ma350DayNormal = movmean(data, windowSize350Day);
+        ma350Day = movmean(data, windowSize350Day);
+        ma350Daylog = movmean(datalog, windowSize350Day);
     else
         ma350Day = 0;
-        ma350DayNormal = 0;
+        ma350Daylog = 0;
     end
     if dataSize > windowSize1400Day
-        ma1400Day = movmean(datalog, windowSize1400Day); % 200 weeks
-        ma1400DayNormal = movmean(data, windowSize1400Day);
+        ma1400Day = movmean(data, windowSize1400Day); % 200 weeks
+        ma1400Daylog = movmean(datalog, windowSize1400Day);
     else
         ma1400Day = 0;
-        ma1400DayNormal = 0;
+        ma1400Daylog = 0;
     end
     if dataSize > windowSize20
         movingAverage.ma20 = movmean(datalog, windowSize20);
@@ -98,31 +98,33 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
     
     % 50 days over 20 week average
     if dataSize > windowSize50Day && dataSize > windowSize350Day
-        r50O20W = ma50DayNormal ./ ma20WeeksInDaysNormal;
+        r50O20W = ma50Day ./ ma20WeeksInDays;
+        %r50O20Wlog = ma50Daylog ./ ma20WeeksInDayslog;
     end
     
     if dataSize > windowSize50Day && dataSize > windowSize350Day
-        r50d50w = ma50DayNormal ./ ma350DayNormal;
+        r50d50w = ma50Day ./ ma350Day;
+        %r50d50wlog = ma50Daylog ./ ma350Daylog;
     end
     % 50 day over 50 week average
     
     if dataSize > windowSize350Day && dataSize > windowSize350Day
-        risk = ma20WeeksInDaysNormal ./ ma350DayNormal;
+        risk = ma20WeeksInDays ./ ma350Day;
     end
     % 20 day over 50 week average
 
     if dataSize > windowSize350Day
-        pO50W = data ./ ma350DayNormal;
+        pO50W = data ./ ma350Day;
     end
     % price over 50 week average
     
     if dataSize > windowSize1400Day
-        pO200W = data ./ ma1400DayNormal;
+        pO200W = data ./ ma1400Day;
     end
     % price over 200 week average
     
     if dataSize > windowSize350Day
-        pO20W = data ./ ma20WeeksInDaysNormal;
+        pO20W = data ./ ma20WeeksInDays;
         lnp20w = log10(pO20W);
     end
     
@@ -175,10 +177,10 @@ function [pr, r50O20W, r50d50w, pO50W, pO200W, pO20W, lnp20w, risk, movingAverag
     r50d50w = normalize(r50d50w, 'range');
     risk = normalize(risk, 'range');
     
-    movingAverage.ma20WeeksInDays = ma20WeeksInDays;
-    movingAverage.ma50Day = ma50Day;
-    movingAverage.ma350Day = ma350Day;
-    movingAverage.ma1400Day = ma1400Day;
+    movingAverage.ma20WeeksInDays = ma20WeeksInDayslog;
+    movingAverage.ma50Day = ma50Daylog;
+    movingAverage.ma350Day = ma350Daylog;
+    movingAverage.ma1400Day = ma1400Daylog;
 end
 
 function normal = normalizes(data, is60m)
